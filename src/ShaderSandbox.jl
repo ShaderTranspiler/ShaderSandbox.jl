@@ -1,9 +1,11 @@
 module ShaderSandbox
 
-const TRANSPILE_OUTPUT_PATH = "./shaders/transpiled.frag"
+const ROOT_DIR = joinpath(@__DIR__, "..")
 
-const INITIAL_VS_PATH = "./shaders/full_screen.vert"
-const INITIAL_FS_PATH = "./shaders/shadertoy.frag"
+const TRANSPILE_OUTPUT_PATH = joinpath(ROOT_DIR, "shaders", "transpiled.frag")
+
+const INITIAL_VS_PATH = joinpath(ROOT_DIR, "shaders", "full_screen.vert")
+const INITIAL_FS_PATH = joinpath(ROOT_DIR, "shaders", "shadertoy.frag")
 
 const JULIA_CODE_MAX_LEN = 4096 * 4
 
@@ -20,6 +22,10 @@ include("transpile.jl")
 using .TranspilerWrapper
 
 function (@main)(ARGS)
+    run_app()
+end
+
+function run_app()
     gen_glsl_code = ""
 
     vs_path_buf = Vector{Cchar}(undef, 128)
