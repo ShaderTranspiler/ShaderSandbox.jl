@@ -42,5 +42,5 @@ julia> Pkg.instantiate()
 
 These only need to be executed once after cloning. Afterwards, the app can be simply started with:
 ```bash
-myuser@mymachine:~/ShaderSandbox.jl$ julia --project=. src/run.jl
+myuser@mymachine:~/ShaderSandbox.jl$ julia src/run.jl
 ```

@@ -14,12 +14,12 @@ import GLFW
 using ModernGL
 using CImGui
 
+using ShaderTranspiler
+
 include("AverageQueue.jl")
 include("gl_utils.jl")
 include("gui.jl")
 include("transpile.jl")
-
-using .TranspilerWrapper
 
 function (@main)(ARGS)
     run_app()
@@ -180,11 +180,10 @@ function run_app()
             is_dragging_shader = false
         end
 
+        cpos = GLFW.GetCursorPos(window)
+        cpos = [clamp(cpos.x, 0, width), clamp(height - cpos.y, 0, height)]
+
         if is_dragging_shader
-            cpos = GLFW.GetCursorPos(window)
-
-            cpos = [clamp(cpos.x, 0, width), clamp(height - cpos.y, 0, height)]
-
             mouse_uniform[1:2] = [cpos...]
 
             if just_clicked
@@ -293,7 +292,7 @@ function run_app()
                 CImGui.Text("resolution: ivec2" * sep * "The resolution of the OpenGL viewport (in pixels)")
                 CImGui.Text("time: float" * sep * "The elapsed time (in seconds) since the start of the current shader")
                 CImGui.Text("delta: float" * sep * "The elapsed time (in seconds) since the last frame")
-                CImGui.Text("mouse: vec2" * sep * "The current mouse position (in GLFW screen coordinates)")
+                CImGui.Text("mouse: vec4" * sep * "xy: current position, zw: last click position (negative if left mouse button is up)")
                 CImGui.Text("date: ivec3" * sep * "(year, month, day)")
 
                 CImGui.EndTabItem()
