@@ -13,6 +13,7 @@ using Dates
 import GLFW
 using ModernGL
 using CImGui
+using JuliaGLM
 
 using ShaderTranspiler
 
@@ -26,6 +27,9 @@ function (@main)(ARGS)
 end
 
 function run_app()
+    # force JuliaGLM into the Main module (transpilation requirement)
+    Main.eval(:(using JuliaGLM))
+
     gen_glsl_code = ""
 
     vs_path_buf = Vector{Cchar}(undef, 128)

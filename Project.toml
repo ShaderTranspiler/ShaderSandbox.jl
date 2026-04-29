@@ -1,6 +1,6 @@
 name = "ShaderSandbox"
 uuid = "3d788dd4-5a26-45dd-b01b-e0b62f1919cb"
-version = "2.0.0"
+version = "2.0.1"
 authors = ["Szűcs Gergely <p6odrh@inf.elte.hu>"]
 
 [deps]
