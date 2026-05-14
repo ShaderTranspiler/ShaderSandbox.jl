@@ -312,6 +312,10 @@ function run_app()
                 )
 
                 if CImGui.Button("Transpile")
+                    if ("--transpiler-benchmarks" in ARGS)
+                        start_time = time_ns()
+                    end
+
                     frag_code = handle_transpile(unsafe_string(pointer(julia_code_buf)))
 
                     if (!isnothing(frag_code))
@@ -327,6 +331,12 @@ function run_app()
                         new_prog = updateShaders(prog, vs_path_buf, fs_path_buf)
                         if !isnothing(new_prog)
                             prog = new_prog
+                        end
+
+                        if ("--transpiler-benchmarks" in ARGS)
+                            end_time = time_ns()
+
+                            println("Entire shader swap took $((end_time - start_time) / 1_000_000) ms")
                         end
                     end
                 end
