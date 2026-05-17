@@ -3,21 +3,21 @@
 @gl_uniform global mouse::Vec4
 @gl_uniform global time::Float32
 
-function sd_round_box(p::Vec2, b::Vec2, r::Vec4)
-    if p["x"] <= 0.0
-        r["xy"] = r["zw"]
-    end
-
-    if p["y"] <= 0.0
-        r["x"] = r["y"]
-    end
-
-    q = abs(p) - b .+ r["x"]
-
-    min(max(q["x"], q["y"]), 0.0) + length(max(q, 0.0)) - r["x"]
-end
-
 function main()
+    function sd_round_box(p::Vec2, b::Vec2, r::Vec4)
+        if p["x"] <= 0.0
+            r["xy"] = r["zw"]
+        end
+    
+        if p["y"] <= 0.0
+            r["x"] = r["y"]
+        end
+    
+        q = abs(p) - b .+ r["x"]
+    
+        min(max(q["x"], q["y"]), 0.0) + length(max(q, 0.0)) - r["x"]
+    end
+
     p = (2.0 * gl_FragCoord["xy"] - resolution["xy"]) ./ resolution["y"]
     m = (2.0 * mouse["xy"] - resolution["xy"]) ./ resolution["y"]
 
