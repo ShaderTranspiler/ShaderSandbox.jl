@@ -35,10 +35,15 @@ function run_app()
     vs_path_buf = Vector{Cchar}(undef, 128)
     setindex!(vs_path_buf, Vector{Char}(INITIAL_VS_PATH), 1:length(INITIAL_VS_PATH))
     vs_path_buf[length(INITIAL_VS_PATH)+1] = '\0'
+    vs_path = INITIAL_VS_PATH
 
     fs_path_buf = Vector{Cchar}(undef, 128)
     setindex!(fs_path_buf, Vector{Char}(INITIAL_FS_PATH), 1:length(INITIAL_FS_PATH))
     fs_path_buf[length(INITIAL_FS_PATH)+1] = '\0'
+    fs_path = INITIAL_FS_PATH
+
+    vs_mtime::Float64 = mtime(vs_path)
+    fs_mtime::Float64 = mtime(fs_path)
 
     julia_code_buf = Vector{Cchar}(undef, JULIA_CODE_MAX_LEN)
     julia_code_buf[1] = '\0'
@@ -74,10 +79,16 @@ function run_app()
             end
 
             if key == GLFW.KEY_F5 && (mods & GLFW.MOD_CONTROL) != 0
+                vs_path = unsafe_string(pointer(vs_path_buf))
+                fs_path = unsafe_string(pointer(fs_path_buf))
+
                 new_prog = updateShaders(prog, vs_path_buf, fs_path_buf)
                 if !isnothing(new_prog)
                     prog = new_prog
                 end
+
+                vs_mtime = mtime(vs_path)
+                fs_mtime = mtime(fs_path)
             end
 
             if key == GLFW.KEY_F11
@@ -112,7 +123,8 @@ function run_app()
 
         glViewport(0, 0, width, height)
     end
-
+    
+    handleWindowResize(window, width, height)
     GLFW.SetWindowSizeCallback(window, handleWindowResize)
 
     mouse_btn_down = false
@@ -273,6 +285,12 @@ function run_app()
                     if !isnothing(new_prog)
                         prog = new_prog
                     end
+
+                    vs_path = unsafe_string(pointer(vs_path_buf))
+                    fs_path = unsafe_string(pointer(fs_path_buf))
+
+                    vs_mtime = mtime(vs_path)
+                    fs_mtime = mtime(fs_path)
                     CImGui.SetWindowCollapsed("Menu", true)
                 end
 
@@ -336,6 +354,8 @@ function run_app()
                         if !isnothing(new_prog)
                             prog = new_prog
                         end
+                        vs_mtime = mtime(vs_path)
+                        fs_mtime = mtime(fs_path)
 
                         if ("--transpiler-benchmarks" in ARGS)
                             end_time = time_ns()
@@ -344,7 +364,6 @@ function run_app()
                         end
                     end
                 end
-
 
                 CImGui.EndTabItem()
             end
@@ -361,6 +380,19 @@ function run_app()
         CImGui.End()
         CImGui.Render()
         CImGui.ImGui_ImplOpenGL3_RenderDrawData(CImGui.GetDrawData())
+
+        cur_vs_mtime = mtime(vs_path)
+        cur_fs_mtime = mtime(fs_path)
+
+        if cur_vs_mtime > vs_mtime || cur_fs_mtime > fs_mtime
+            new_prog = updateShaders(prog, vs_path_buf, fs_path_buf)
+            if !isnothing(new_prog)
+                prog = new_prog
+            end
+            
+            vs_mtime = cur_vs_mtime
+            fs_mtime = cur_fs_mtime
+        end
 
         GLFW.SwapBuffers(window)
         GLFW.PollEvents()
