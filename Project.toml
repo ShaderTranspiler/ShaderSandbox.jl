@@ -1,6 +1,6 @@
 name = "ShaderSandbox"
 uuid = "3d788dd4-5a26-45dd-b01b-e0b62f1919cb"
-version = "2.1.0"
+version = "2.1.1"
 authors = ["Szűcs Gergely <p6odrh@inf.elte.hu>"]
 
 [deps]
@@ -14,8 +14,8 @@ stc_jll = "8dead81b-3450-5e2f-948b-0f2a405f2b3d"
 
 [sources]
 JuliaGLM = {rev = "33cd74d", url = "https://github.com/Csabix/JuliaGLM"}
-ShaderTranspiler = {rev = "v0.9.0-rc.2", url = "https://github.com/ShaderTranspiler/ShaderTranspiler.jl"}
-stc_jll = {rev = "v0.9.0-rc.2", url = "https://github.com/ShaderTranspiler/stc_jll.jl"}
+ShaderTranspiler = {rev = "v0.9.0-rc.3", url = "https://github.com/ShaderTranspiler/ShaderTranspiler.jl"}
+stc_jll = {rev = "v0.9.0-rc.3", url = "https://github.com/ShaderTranspiler/stc_jll.jl"}
 
 [compat]
 CImGui = "7.1.0"
